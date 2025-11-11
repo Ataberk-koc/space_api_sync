@@ -1,0 +1,242 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "SpaceX Capsule API",
+        "description": "SpaceX API'den senkronize edilen kapsül verilerine erişim sağlar.",
+        "contact": {
+            "email": "admin@example.com"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://my-default-host.com",
+            "description": "SpaceX API Endpointleri"
+        }
+    ],
+    "paths": {
+        "/api/capsules": {
+            "get": {
+                "tags": [
+                    "Capsules"
+                ],
+                "summary": "Kapsül listesini getir",
+                "description": "Tüm kapsülleri listeler ve status parametresi ile filtreleme yapılabilir",
+                "operationId": "getCapsules",
+                "parameters": [
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Kapsül durumu (active, retired, destroyed, unknown)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "active",
+                                "retired",
+                                "destroyed",
+                                "unknown"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Sayfa numarası",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Başarılı işlem",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "current_page": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "capsule_serial": {
+                                                        "type": "string",
+                                                        "example": "C101"
+                                                    },
+                                                    "capsule_id": {
+                                                        "type": "string",
+                                                        "example": "dragon1"
+                                                    },
+                                                    "status": {
+                                                        "type": "string",
+                                                        "example": "retired"
+                                                    },
+                                                    "original_launch": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2010-12-08 15:43:00"
+                                                    },
+                                                    "missions_count": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "details": {
+                                                        "type": "string",
+                                                        "example": "Reentered after three weeks in orbit"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "per_page": {
+                                            "type": "integer",
+                                            "example": 15
+                                        },
+                                        "total": {
+                                            "type": "integer",
+                                            "example": 100
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Yetkisiz erişim"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/api/capsules/{capsule_serial}": {
+            "get": {
+                "tags": [
+                    "Capsules"
+                ],
+                "summary": "Kapsül detayını getir",
+                "description": "Belirtilen serial numarasına sahip kapsülün detaylarını getirir",
+                "operationId": "getCapsuleBySerial",
+                "parameters": [
+                    {
+                        "name": "capsule_serial",
+                        "in": "path",
+                        "description": "Kapsül seri numarası",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "C101"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Başarılı işlem",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "capsule_serial": {
+                                            "type": "string",
+                                            "example": "C101"
+                                        },
+                                        "capsule_id": {
+                                            "type": "string",
+                                            "example": "dragon1"
+                                        },
+                                        "status": {
+                                            "type": "string",
+                                            "example": "retired"
+                                        },
+                                        "original_launch": {
+                                            "type": "string",
+                                            "format": "date-time",
+                                            "example": "2010-12-08 15:43:00"
+                                        },
+                                        "missions_count": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "details": {
+                                            "type": "string",
+                                            "example": "Reentered after three weeks in orbit"
+                                        },
+                                        "raw_data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Kapsül bulunamadı",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Capsule not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Yetkisiz erişim"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "passport": {
+                "type": "oauth2",
+                "flows": {
+                    "password": {
+                        "tokenUrl": "http://127.0.0.1:8000/oauth/token",
+                        "scopes": {}
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Capsules",
+            "description": "Capsules"
+        }
+    ]
+}
