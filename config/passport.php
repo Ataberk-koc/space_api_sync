@@ -43,4 +43,19 @@ return [
 
     'connection' => env('PASSPORT_CONNECTION'),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Grant Types
+    |--------------------------------------------------------------------------
+    |
+    | Specify which grant types are enabled for your application.
+    |
+    */
+
+    'grants' => [
+        'password' => true,
+        'refresh_token' => true,
+        'client_credentials' => true,
+    ],
+
 ];

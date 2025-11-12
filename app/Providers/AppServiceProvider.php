@@ -23,7 +23,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Passport ayarları
+        // Passport ayarları - Laravel 11 için grant types'ı manuel kaydet
+        if (config('passport.grants.password')) {
+            Passport::enablePasswordGrant();
+        }
+        
         Passport::tokensExpireIn(now()->addDays(15));
         Passport::refreshTokensExpireIn(now()->addDays(30));
         Passport::personalAccessTokensExpireIn(now()->addDays(180));
